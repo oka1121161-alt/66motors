@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>66motors Калькулятор</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    select { -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 1rem center; background-repeat: no-repeat; background-size: 1em;
+      padding-right: 2.8rem !important;
+    }
+    .checkbox-container {
+      display: flex; align-items: center; cursor: pointer; user-select: none;
+      padding: 0.75rem 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; transition: all 0.2s;
+    }
+    .checkbox-container:hover { border-color: #93c5fd; background: #eff6ff; }
+    .checkbox-container input:checked ~ .checkmark { background: #2563eb; border-color: #2563eb; }
+    .checkbox-container input:checked ~ .checkmark:after { display: block; }
+    .checkmark {
+      position: relative; height: 1.25rem; width: 1.25rem; background: white; border: 2px solid #cbd5e1;
+      border-radius: 0.375rem; margin-right: 0.75rem; flex-shrink: 0;
+    }
+    .checkmark:after {
+      content: ""; position: absolute; display: none; left: 0.35rem; top: 0.1rem;
+      width: 0.35rem; height: 0.65rem; border: solid white; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 items-start">
+
+    <!-- Левая часть — ВВОД -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-200">
+      <div class="flex items-center mb-6">
+        <img src="https://i.ibb.co/TDZF3BTH/IMG-0986-1.jpg" alt="66motors" class="w-16 h-auto mr-3">
+        <h2 class="text-2xl font-bold text-gray-800">Калькулятор</h2>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <div><label class="block text-gray-700 font-medium mb-1">VIN код</label><input type="text" id="vin" maxlength="17" placeholder="Например: SALWR2RE3JA123456" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl uppercase focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+        <div><label class="block text-gray-700 font-medium mb-1">Стоимость авто ($)</label><input type="number" id="lotPrice" placeholder="0" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+        <div><label class="block text-gray-700 font-medium mb-1">Аукционный сбор ($)</label><input type="number" id="auctionFee" placeholder="Например: 1275" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+        <div><label class="block text-gray-700 font-medium mb-1">Транспортировка в порт США ($)</label><input type="number" id="inland" placeholder="300–1200" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+
+        <div><label class="block text-gray-700 font-medium mb-2">Порт прибытия</label>
+          <div class="grid grid-cols-2 gap-3">
+            <button id="port-poti" onclick="selectPort('poti')" class="py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold rounded-xl shadow-md hover:scale-105 transition active">Поти (Грузия)</button>
+            <button id="port-klaypeda" onclick="selectPort('klaypeda')" class="py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl shadow-md hover:scale-105 transition">Клайпеда (Литва)</button>
+          </div>
+        </div>
+
+        <div><label id="oceanLabel" class="block text-gray-700 font-medium mb-1">Доставка от порта США до Поти ($)</label><input type="number" id="oceanFreight" placeholder="1400–3200" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-gray-700 font-medium mb-1">Комиссия банка (%)</label><input type="number" step="0.01" id="bankPercent" placeholder="1.5" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500"></div>
+          <div><label class="block text-gray-700 font-medium mb-1">Комиссия банка ($)</label><input type="number" id="bankUSD" placeholder="или $" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500"></div>
+        </div>
+
+        <div><label id="toMinskLabel" class="block text-gray-700 font-medium mb-1">Доставка от Поти до Минска (СВХ) ($)</label><input type="number" id="toMinsk" placeholder="800–1800" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+
+        <div><label class="block text-gray-700 font-medium mb-1">Возраст авто</label>
+          <select id="carAge" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+            <option value="" disabled selected>Выберите возраст</option>
+            <option value="under3">До 3 лет</option>
+            <option value="3to5">3–5 лет</option>
+            <option value="over5">Больше 5 лет</option>
+          </select>
+        </div>
+
+        <div><label class="block text-gray-700 font-medium mb-1">Объём двигателя (см³)</label><input type="number" id="engineVolume" placeholder="Например: 1998" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+
+        <div class="space-y-2">
+          <label class="checkbox-container"><input type="checkbox" id="preferentialCustoms" class="hidden"><span class="checkmark"></span><span>Льготная растаможка</span></label>
+          <label class="checkbox-container"><input type="checkbox" id="electricCar" class="hidden"><span class="checkmark"></span><span>Электрокар</span></label>
+        </div>
+
+        <div><label class="block text-gray-700 font-medium mb-1">Услуги 66motors (BYN)</label><input type="number" id="trustAutoFee" value="990" class="w-full px-4 py-3 bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400 rounded-xl font-bold text-red-800 focus:border-red-600 focus:ring-2 focus:ring-red-100"></div>
+      </div>
+    </div>
+
+    <!-- Правая часть — ДВА РЕЗУЛЬТАТА -->
+    <div class="space-y-10">
+
+      <!-- Первый результат — с комиссией банка -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+        <div class="flex justify-center mb-8">
+          <img src="https://i.ibb.co/TDZF3BTH/IMG-0986-1.jpg" alt="66motors" class="w-32 h-auto">
+        </div>
+        <div class="w-full max-w-3xl mx-auto text-sm">
+          <div class="grid grid-cols-2 gap-y-5">
+            <div>VIN</div><div id="res-vin" class="text-right font-mono font-bold text-gray-400">—</div>
+            <div>Стоимость авто</div><div id="res-lot" class="text-right font-bold text-gray-400">—</div>
+            <div>Аукционный сбор</div><div id="res-auction" class="text-right font-bold text-gray-400">—</div>
+            <div>Транспортировка в порт США</div><div id="res-inland" class="text-right font-bold text-gray-400">—</div>
+            <div id="res-ocean-label" class="text-left text-gray-700">Доставка от порта США до Поти</div><div id="res-ocean" class="text-right font-bold text-gray-400">—</div>
+            <div>Комиссия банка</div><div id="res-bank" class="text-right font-bold text-gray-400">—</div>
+            <div id="res-port-to-minsk-label" class="textShi-left text-gray-700">Доставка от Поти до Минска</div><div id="res-to-minsk" class="text-right font-bold text-gray-400">—</div>
+            <div>услуги 66motors</div><div id="res-trust" class="text-right font-bold text-gray-400">—</div>
+          </div>
+          <div class="border-t-2 border-gray-300 my-6"></div>
+          <div class="grid grid-cols-2 gap-y-5">
+            <div>Таможенная пошлина</div><div id="res-customs" class="text-right font-bold text-gray-400">—</div>
+            <div>Таможенный сбор</div><div id="res-customs-fee" class="text-right font-bold text-gray-400">—</div>
+            <div>Утилизационный сбор</div><div id="res-util" class="text-right font-bold text-gray-400">—</div>
+            <div>Расходы на СВХ</div><div id="res-svh" class="text-right font-bold text-gray-400">—</div>
+          </div>
+          <div class="border-t-2 border-gray-300 mt-8 pt-6">
+            <div class="grid grid-cols-2">
+              <div class="text-lg font-bold">Итого</div>
+              <div id="res-total-with-bank" class="text-right text-3xl font-black text-cyan-600">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Второй результат — без комиссии банка -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+        <div class="flex justify-center mb-8">
+          <img src="https://i.ibb.co/TDZF3BTH/IMG-0986-1.jpg" alt="66motors" class="w-32 h-auto">
+        </div>
+        <div class="w-full max-w-3xl mx-auto text-sm">
+          <div class="grid grid-cols-2 gap-y-5">
+            <div>VIN</div><div id="res-vin2" class="text-right font-mono font-bold text-gray-400">—</div>
+            <div>Стоимость авто</div><div id="res-lot2" class="text-right font-bold text-gray-400">—</div>
+            <div>Аукционный сбор</div><div id="res-auction2" class="text-right font-bold text-gray-400">—</div>
+            <div>Транспортировка в порт США</div><div id="res-inland2" class="text-right font-bold text-gray-400">—</div>
+            <div id="res-ocean-label2" class="text-left text-gray-700">Доставка от порта США до Поти</div><div id="res-ocean2" class="text-right font-bold text-gray-400">—</div>
+            <div id="res-port-to-minsk-label2" class="text-left text-gray-700">Доставка от Поти до Минска</div><div id="res-to-minsk2" class="text-right font-bold text-gray-400">—</div>
+            <div>услуги 66motors</div><div id="res-trust2" class="text-right font-bold text-gray-400">—</div>
+          </div>
+          <div class="border-t-2 border-gray-300 my-6"></div>
+          <div class="grid grid-cols-2 gap-y-5">
+            <div>Таможенная пошлина</div><div id="res-customs2" class="text-right font-bold text-gray-400">—</div>
+            <div>Таможенный сбор</div><div id="res-customs-fee2" class="text-right font-bold text-gray-400">—</div>
+            <div>Утилизационный сбор</div><div id="res-util2" class="text-right font-bold text-gray-400">—</div>
+            <div>Расходы на СВХ</div><div id="res-svh2" class="text-right font-bold text-gray-400">—</div>
+          </div>
+          <div class="border-t-2 border-gray-300 mt-8 pt-6">
+            <div class="grid grid-cols-2">
+              <div class="text-lg font-bold">Итого</div>
+              <div id="res-total-no-bank" class="text-right text-3xl font-black text-cyan-600">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Скрипт — без изменений, только название услуги поменялось -->
+  <script>
+    let selectedPort = 'poti';
+    const EUR_TO_USD = 1.09;
+    const BYN_TO_USD = 0.305;
+
+    function selectPort(p) {
+      selectedPort = p;
+      document.getElementById('port-poti').className = p==='poti' ? 'py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold rounded-xl shadow-md hover:scale-105 transition active' : 'py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl shadow-md hover:scale-105 transition';
+      document.getElementById('port-klaypeda').className = p==='klaypeda' ? 'py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold rounded-xl shadow-md hover:scale-105 transition active' : 'py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl shadow-md hover:scale-105 transition';
+
+      const oceanText = p === 'poti' ? 'Доставка от порта США до Поти ($)' : 'Доставка от порта США до Клайпеды ($)';
+      const toMinskText = p === 'poti' ? 'Доставка от Поти до Минска (СВХ) ($)' : 'Доставка от Клайпеды до Минска (СВХ) ($)';
+
+      const resOceanLabel = p === 'poti' ? 'Доставка от порта США до Поти' : 'Доставка от порта США до Клайпеды';
+      const resToMinskLabel = p === 'poti' ? 'Доставка от Поти до Минска' : 'Доставка от Клайпеды до Минска';
+
+      document.getElementById('oceanLabel').textContent = oceanText;
+      document.getElementById('toMinskLabel').textContent = toMinskText;
+      document.getElementById('res-ocean-label').textContent = resOceanLabel;
+      document.getElementById('res-ocean-label2').textContent = resOceanLabel;
+      document.getElementById('res-port-to-minsk-label').textContent = resToMinskLabel;
+      document.getElementById('res-port-to-minsk-label2').textContent = resToMinskLabel;
+
+      updateResult();
+    }
+
+    const bp = document.getElementById('bankPercent'), bu = document.getElementById('bankUSD');
+    function base() { return (parseFloat(document.getElementById('lotPrice').value)||0) + (parseFloat(document.getElementById('auctionFee').value)||0) + (parseFloat(document.getElementById('inland').value)||0) + (parseFloat(document.getElementById('oceanFreight').value)||0); }
+    bp.addEventListener('input', () => { const p=parseFloat(bp.value)||0; bu.value = p>0 ? (base()*p/100).toFixed(2) : ''; updateResult(); });
+    bu.addEventListener('input', () => { const u=parseFloat(bu.value)||0; const b=base(); bp.value = b>0&&u>0 ? (u/b*100).toFixed(3) : ''; updateResult(); });
+
+    const inputs = ['vin','lotPrice','auctionFee','inland','oceanFreight','bankUSD','toMinsk','trustAutoFee','engineVolume'];
+    inputs.forEach(id => document.getElementById(id).addEventListener('input', updateResult));
+    document.getElementById('vin').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase(); updateResult(); });
+    document.getElementById('carAge').addEventListener('change', updateResult);
+    document.getElementById('preferentialCustoms').addEventListener('change', updateResult);
+    document.getElementById('electricCar').addEventListener('change', updateResult);
+
+    function calculateCustomsEUR() {
+      const lotUSD = parseFloat(document.getElementById('lotPrice').value) || 0;
+      const volume = parseFloat(document.getElementById('engineVolume').value) || 0;
+      const age = document.getElementById('carAge').value;
+      const isElectric = document.getElementById('electricCar').checked;
+      const isPreferential = document.getElementById('preferentialCustoms').checked;
+
+      if (isElectric) return 0;
+
+      let customsEUR = 0;
+
+      if (age === 'under3') {
+        const lotEUR = lotUSD / EUR_TO_USD;
+        let percent = 0;
+        let minPerCm3 = 0;
+
+        if (lotEUR <= 8500) { percent = 0.54; minPerCm3 = 2.5; }
+        else if (lotEUR <= 16700) { percent = 0.48; minPerCm3 = 3.5; }
+        else if (lotEUR <= 42300) { percent = 0.48; minPerCm3 = 5.5; }
+        else if (lotEUR <= 84500) { percent = 0.48; minPerCm3 = 7.5; }
+        else if (lotEUR <= 169000) { percent = 0.48; minPerCm3 = 15; }
+        else { percent = 0.48; minPerCm3 = 20; }
+
+        const byPercent = lotEUR * percent;
+        const byVolume = volume * minPerCm3;
+        customsEUR = Math.max(byPercent, byVolume);
+      } else {
+        let rate = 0;
+        if (age === '3to5') {
+          if (volume <= 1000) rate = 1.5;
+          else if (volume <= 1500) rate = 1.7;
+          else if (volume <= 1800) rate = 2.5;
+          else if (volume <= 2300) rate = 2.7;
+          else if (volume <= 3000) rate = 3.0;
+          else rate = 3.6;
+        } else {
+          if (volume <= 1000) rate = 3.0;
+          else if (volume <= 1500) rate = 3.2;
+          else if (volume <= 1800) rate = 3.5;
+          else if (volume <= 2300) rate = 4.8;
+          else if (volume <= 3000) rate = 5.0;
+          else rate = 5.7;
+        }
+        customsEUR = volume * rate;
+      }
+
+      if (isPreferential) customsEUR /= 2;
+      return Math.round(customsEUR * 100) / 100;
+    }
+
+    function updateResult() {
+      const vin = document.getElementById('vin').value.trim().toUpperCase();
+      const lot = parseFloat(document.getElementById('lotPrice').value)||0;
+      const auction = parseFloat(document.getElementById('auctionFee').value)||0;
+      const inland = parseFloat(document.getElementById('inland').value)||0;
+      const ocean = parseFloat(document.getElementById('oceanFreight').value)||0;
+      const bank = parseFloat(document.getElementById('bankUSD').value)||0;
+      const toMinsk = parseFloat(document.getElementById('toMinsk').value)||0;
+      const trustBYN = parseFloat(document.getElementById('trustAutoFee').value)||0;
+      const trustUSD = trustBYN * BYN_TO_USD;
+      const age = document.getElementById('carAge').value;
+      const isElectric = document.getElementById('electricCar').checked;
+
+      const customsEUR = calculateCustomsEUR();
+      const customsUSD = customsEUR * EUR_TO_USD;
+
+      const utilBYN = age === 'under3' ? 545 : 1089;
+      const utilUSD = utilBYN * BYN_TO_USD;
+
+      const svhBYN = 650;
+      const svhUSD = svhBYN * BYN_TO_USD;
+
+      const totalWithBank = lot + auction + inland + ocean + bank + toMinsk + trustUSD + customsUSD + (isElectric ? 0 : 120 * BYN_TO_USD) + utilUSD + svhUSD;
+      const totalWithBankRounded = Math.floor(totalWithBank);
+
+      const totalNoBank = lot + auction + inland + ocean + toMinsk + trustUSD + customsUSD + (isElectric ? 0 : 120 * BYN_TO_USD) + utilUSD + svhUSD;
+      const totalNoBankRounded = Math.floor(totalNoBank);
+
+      // Первый результат
+      document.getElementById('res-vin').textContent = vin || '—';
+      document.getElementById('res-lot').textContent = lot > 0 ? lot.toLocaleString() + ' $' : '—';
+      document.getElementById('res-auction').textContent = auction > 0 ? auction.toLocaleString() + ' $' : '—';
+      document.getElementById('res-inland').textContent = inland > 0 ? inland.toLocaleString() + ' $' : '—';
+      document.getElementById('res-ocean').textContent = ocean > 0 ? ocean.toLocaleString() + ' $' : '—';
+      document.getElementById('res-bank').textContent = bank > 0 ? bank.toLocaleString() + ' $' : '—';
+      document.getElementById('res-to-minsk').textContent = toMinsk > 0 ? toMinsk.toLocaleString() + ' $' : '—';
+      document.getElementById('res-trust').textContent = trustBYN > 0 ? trustBYN.toLocaleString() + ' BYN' : '—';
+      document.getElementById('res-customs').textContent = customsEUR > 0 ? customsEUR.toLocaleString() + ' €' : '—';
+      document.getElementById('res-customs-fee').textContent = isElectric ? '—' : '120 BYN';
+      document.getElementById('res-util').textContent = utilBYN.toLocaleString() + ' BYN';
+      document.getElementById('res-svh').textContent = svhBYN.toLocaleString() + ' BYN';
+      document.getElementById('res-total-with-bank').textContent = totalWithBankRounded > 0 ? totalWithBankRounded.toLocaleString() + ' $' : '—';
+
+      // Второй результат
+      document.getElementById('res-vin2').textContent = vin || '—';
+      document.getElementById('res-lot2').textContent = lot > 0 ? lot.toLocaleString() + ' $' : '—';
+      document.getElementById('res-auction2').textContent = auction > 0 ? auction.toLocaleString() + ' $' : '—';
+      document.getElementById('res-inland2').textContent = inland > 0 ? inland.toLocaleString() + ' $' : '—';
+      document.getElementById('res-ocean2').textContent = ocean > 0 ? ocean.toLocaleString() + ' $' : '—';
+      document.getElementById('res-to-minsk2').textContent = toMinsk > 0 ? toMinsk.toLocaleString() + ' $' : '—';
+      document.getElementById('res-trust2').textContent = trustBYN > 0 ? trustBYN.toLocaleString() + ' BYN' : '—';
+      document.getElementById('res-customs2').textContent = customsEUR > 0 ? customsEUR.toLocaleString() + ' €' : '—';
+      document.getElementById('res-customs-fee2').textContent = isElectric ? '—' : '120 BYN';
+      document.getElementById('res-util2').textContent = utilBYN.toLocaleString() + ' BYN';
+      document.getElementById('res-svh2').textContent = svhBYN.toLocaleString() + ' BYN';
+      document.getElementById('res-total-no-bank').textContent = totalNoBankRounded > 0 ? totalNoBankRounded.toLocaleString() + ' $' : '—';
+
+      // Стили — названия доставки не жирные
+      document.querySelectorAll('.text-right[id^="res-"]').forEach(el => {
+        el.className = el.textContent === '—' ? 'text-right font-bold text-gray-400' : 'text-right font-bold';
+      });
+      document.querySelectorAll('[id^="res-ocean-label"], [id^="res-port-to-minsk-label"]').forEach(el => {
+        el.className = 'text-left text-gray-700';
+      });
+      document.getElementById('res-total-with-bank').className = totalWithBankRounded > 0 ? 'text-right text-3xl font-black text-cyan-600' : 'text-right text-3xl font-black text-gray-400';
+      document.getElementById('res-total-no-bank').className = totalNoBankRounded > 0 ? 'text-right text-3xl font-black text-cyan-600' : 'text-right text-3xl font-black text-gray-400';
+    }
+
+    updateResult();
+  </script>
+</body>
+</html>
