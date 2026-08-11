@@ -41,11 +41,11 @@
 
       <div class="space-y-4 text-sm">
         <div><label class="block text-gray-700 font-medium mb-1">VIN код</label><input type="text" id="vin" maxlength="17" placeholder="Например: SALWR2RE3JA123456" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl uppercase focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
-        <div><label class="block text-gray-700 font-medium mb-1">Стоимость авто ($)</label><input type="number" id="lotPrice" placeholder="0" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
+        <div><label class="block text-gray-700 font-medium mb-1">Ставка ($)</label><input type="number" id="lotPrice" placeholder="0" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
         <div><label class="block text-gray-700 font-medium mb-1">Аукционный сбор ($)</label><input type="number" id="auctionFee" placeholder="Например: 1275" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
         
         <div>
-          <label class="block text-gray-700 font-medium mb-2">Транспортировка в порт США</label>
+          <label class="block text-gray-700 font-medium mb-2">Доставка в порт США</label>
           <div class="grid grid-cols-3 gap-3 relative">
             <div class="col-span-2 relative">
               <input id="locationInput" placeholder="Выберите локацию..." class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl" autocomplete="off">
@@ -75,6 +75,17 @@
             <button id="port-klaipeda" onclick="selectPort('klaipeda')" class="py-3 px-4 rounded-xl font-semibold shadow-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white">Клайпеда (Литва)</button>
           </div>
         </div>
+		  <!-- НОВЫЙ БЛОК: Портовые сборы -->
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">Портовые сборы</label>
+          <div class="flex gap-3">
+            <input type="number" id="portFee" placeholder="Сумма" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" value="0">
+            <select id="portFeeCurrency" class="px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              <option value="USD">$</option>
+              <option value="EUR">€</option>
+            </select>
+          </div>
+        </div>
 
         <div>
           <label id="oceanLabel" class="block text-gray-700 font-medium mb-2">Доставка от порта США до Клайпеды</label>
@@ -89,8 +100,8 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div><label class="block text-gray-700 font-medium mb-1">Комиссия банка (%)</label><input type="number" step="0.01" id="bankPercent" placeholder="1.5" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500"></div>
-          <div><label class="block text-gray-700 font-medium mb-1">Комиссия банка ($)</label><input type="number" id="bankUSD" placeholder="или $" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500"></div>
+          <label class="block text-gray-700 font-medium mb-1">Комиссия за перевод (%)</label><input type="number" step="0.01" id="bankPercent" placeholder="1.5" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500"></div>
+          <div><label class="block text-gray-700 font-medium mb-1">Комиссия за перевод ($)</label><input type="number" id="bankUSD" placeholder="или $" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500"></div>
         </div>
 
         <div><label id="toMinskLabel" class="block text-gray-700 font-medium mb-1">Доставка до Минска (СВХ) ($)</label><input type="number" id="toMinsk" placeholder="800–1800" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"></div>
@@ -121,12 +132,13 @@
         <div class="w-full max-w-3xl mx-auto text-sm">
           <div class="grid grid-cols-2 gap-y-5">
             <div>VIN</div><div id="res-vin" class="text-right font-mono font-bold text-black">—</div>
-            <div>Стоимость авто</div><div id="res-lot" class="text-right font-bold text-black">—</div>
+            <div>Ставка</div><div id="res-lot" class="text-right font-bold text-black">—</div>
             <div>Аукционный сбор</div><div id="res-auction" class="text-right font-bold text-black">—</div>
-            <div>Транспортировка в порт США</div><div id="res-inland" class="text-right font-bold text-black">—</div>
-            <div id="res-ocean-label" class="text-left text-gray-700">Доставка морем</div><div id="res-ocean" class="text-right font-bold text-black">—</div>
-            <div>Комиссия банка</div><div id="res-bank" class="text-right font-bold text-black">—</div>
-            <div id="res-port-to-minsk-label" class="text-left text-gray-700">Доставка до Минска</div><div id="res-to-minsk" class="text-right font-bold text-black">—</div>
+            <div>Доставка в порт США</div><div id="res-inland" class="text-right font-bold text-black">—</div>
+            <div id="res-ocean-label" class="text-left text-gray-700">Морская доставка</div><div id="res-ocean" class="text-right font-bold text-black">—</div>
+            <div id="res-port-fee-label" class="text-left text-gray-700">Портовые сборы</div><div id="res-port-fee" class="text-right font-bold text-black">—</div>
+            <div>Комиссия за перевод</div><div id="res-bank" class="text-right font-bold text-black">—</div>
+            <div id="res-port-to-minsk-label" class="text-left text-gray-700">Порт - Минск</div><div id="res-to-minsk" class="text-right font-bold text-black">—</div>
             <div>услуги ARIVA</div><div id="res-trust" class="text-right font-bold text-black">—</div>
           </div>
           <div class="border-t-2 border-gray-300 my-6"></div>
@@ -150,11 +162,13 @@
         <div class="w-full max-w-3xl mx-auto text-sm">
           <div class="grid grid-cols-2 gap-y-5">
             <div>VIN</div><div id="res-vin2" class="text-right font-mono font-bold text-black">—</div>
-            <div>Стоимость авто</div><div id="res-lot2" class="text-right font-bold text-black">—</div>
-            <div>Аукционный сбор</div><div id="res-auction2" class="text-right font-bold text-black">—</div>
-            <div>Транспортировка в порт США</div><div id="res-inland2" class="text-right font-bold text-black">—</div>
-            <div id="res-ocean-label2" class="text-left text-gray-700">Доставка морем</div><div id="res-ocean2" class="text-right font-bold text-black">—</div>
-            <div id="res-port-to-minsk-label2" class="text-left text-gray-700">Доставка до Минска</div><div id="res-to-minsk2" class="text-right font-bold text-black">—</div>
+            <div>Ставка</div><div id="res-lot" class="text-right font-bold text-black">—</div>
+            <div>Аукционный сбор</div><div id="res-auction" class="text-right font-bold text-black">—</div>
+            <div>Доставка в порт США</div><div id="res-inland" class="text-right font-bold text-black">—</div>
+            <div id="res-ocean-label" class="text-left text-gray-700">Морская доставка</div><div id="res-ocean" class="text-right font-bold text-black">—</div>
+            <div id="res-port-fee-label" class="text-left text-gray-700">Портовые сборы</div><div id="res-port-fee" class="text-right font-bold text-black">—</div>
+            <div>Комиссия за перевод</div><div id="res-bank" class="text-right font-bold text-black">—</div>
+            <div id="res-port-to-minsk-label" class="text-left text-gray-700">Порт - Минск</div><div id="res-to-minsk" class="text-right font-bold text-black">—</div>
             <div>услуги ARIVA</div><div id="res-trust2" class="text-right font-bold text-black">—</div>
           </div>
           <div class="border-t-2 border-gray-300 my-6"></div>
@@ -7181,13 +7195,14 @@
       document.getElementById('port-poti').className = isPoti ? 'py-3 px-4 rounded-xl font-semibold shadow-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white' : 'py-3 px-4 rounded-xl font-semibold shadow-md bg-gray-200 text-gray-700';
       document.getElementById('port-klaipeda').className = !isPoti ? 'py-3 px-4 rounded-xl font-semibold shadow-md bg-gradient-to-r from-blue-600 to-cyan-500 text-white' : 'py-3 px-4 rounded-xl font-semibold shadow-md bg-gray-200 text-gray-700';
       
-      const portName = isPoti ? 'Поти' : 'Клайпеды';
-      document.getElementById('oceanLabel').textContent = `Доставка от порта США до ${portName}`;
-      document.getElementById('toMinskLabel').textContent = `Доставка от ${portName} до Минска (СВХ) ($)`;
-      document.getElementById('res-ocean-label').textContent = `Доставка до ${portName}`;
-      document.getElementById('res-ocean-label2').textContent = `Доставка до ${portName}`;
-      document.getElementById('res-port-to-minsk-label').textContent = `Доставка от ${portName} до Минска`;
-      document.getElementById('res-port-to-minsk-label2').textContent = `Доставка от ${portName} до Минска`;
+      const portName = isPoti ? 'Поти' : 'Клайпеда';
+      
+      document.getElementById('oceanLabel').textContent = `Морская доставка (${portName})`;
+      document.getElementById('toMinskLabel').textContent = `${portName} - Минск ($)`;
+      document.getElementById('res-ocean-label').textContent = `Морская доставка (${portName})`;
+      document.getElementById('res-ocean-label2').textContent = `Морская доставка (${portName})`;
+      document.getElementById('res-port-to-minsk-label').textContent = `${portName} - Минск`;
+      document.getElementById('res-port-to-minsk-label2').textContent = `${portName} - Минск`;
 
       recalcOcean();
     }
@@ -7223,8 +7238,12 @@
     const bp = document.getElementById('bankPercent'), bu = document.getElementById('bankUSD');
     const lotInput = document.getElementById('lotPrice'), auctionInput = document.getElementById('auctionFee');
 
-    function calcBaseSum() {
-      return (Number(lotInput.value) || 0) + (Number(auctionInput.value) || 0) + (Number(inlandHidden.value) || 0) + (Number(oceanHidden.value) || 0);
+   function calcBaseSum() {
+      const portF = parseFloat(document.getElementById('portFee').value) || 0;
+      const curr = document.getElementById('portFeeCurrency').value;
+      const portFeeUSD = curr === 'EUR' ? portF * EUR_TO_USD : portF;
+      
+      return (Number(lotInput.value) || 0) + (Number(auctionInput.value) || 0) + (Number(inlandHidden.value) || 0) + (Number(oceanHidden.value) || 0) + portFeeUSD;
     }
 
     function recalcBank() {
@@ -7238,6 +7257,9 @@
       bp.value = b > 0 && u > 0 ? (u / b * 100).toFixed(3) : '';
       updateResult();
     });
+
+	  document.getElementById('portFee').addEventListener('input', () => { recalcBank(); updateResult(); });
+    document.getElementById('portFeeCurrency').addEventListener('change', () => { recalcBank(); updateResult(); });
 
     [lotInput, auctionInput, document.getElementById('toMinsk'), document.getElementById('trustAutoFee'), document.getElementById('engineVolume')].forEach(el => el.addEventListener('input', () => { recalcBank(); updateResult(); }));
     
@@ -7278,6 +7300,10 @@
       const vin = document.getElementById('vin').value.trim();
       const lot = parseFloat(lotInput.value) || 0, auction = parseFloat(auctionInput.value) || 0;
       const inland = parseFloat(inlandHidden.value) || 0, ocean = parseFloat(oceanHidden.value) || 0;
+		const portF = parseFloat(document.getElementById('portFee').value) || 0;
+      const curr = document.getElementById('portFeeCurrency').value;
+      const portFeeUSD = curr === 'EUR' ? portF * EUR_TO_USD : portF;
+      const portDisplay = portF ? portF.toLocaleString() + (curr === 'EUR' ? ' €' : ' $') : '—';
       const bank = parseFloat(bu.value) || 0, toMinsk = parseFloat(document.getElementById('toMinsk').value) || 0;
       const trustBYN = parseFloat(document.getElementById('trustAutoFee').value) || 0, trustUSD = trustBYN * BYN_TO_USD;
       const isElectric = document.getElementById('electricCar').checked;
@@ -7287,7 +7313,7 @@
       const svhBYN = 650, svhUSD = svhBYN * BYN_TO_USD;
       const customsFeeUSD = isElectric ? 0 : 120 * BYN_TO_USD;
 
-      const totalNoBank = lot + auction + inland + ocean + toMinsk + trustUSD + customsUSD + customsFeeUSD + utilUSD + svhUSD;
+      const totalNoBank = lot + auction + inland + ocean + portFeeUSD + toMinsk + trustUSD + customsUSD + customsFeeUSD + utilUSD + svhUSD;
       const totalWithBank = totalNoBank + bank;
 
       // Отрисовка
@@ -7297,6 +7323,7 @@
         document.getElementById('res-auction'+suffix).textContent = auction ? auction.toLocaleString() + ' $' : '—';
         document.getElementById('res-inland'+suffix).textContent = inland ? inland.toLocaleString() + ' $' : '—';
         document.getElementById('res-ocean'+suffix).textContent = ocean ? ocean.toLocaleString() + ' $' : '—';
+		  document.getElementById('res-port-fee'+suffix).textContent = portDisplay;
         document.getElementById('res-to-minsk'+suffix).textContent = toMinsk ? toMinsk.toLocaleString() + ' $' : '—';
         document.getElementById('res-trust'+suffix).textContent = trustBYN ? trustBYN.toLocaleString() + ' BYN' : '—';
         document.getElementById('res-customs'+suffix).textContent = customsEUR ? Math.round(customsEUR).toLocaleString() + ' €' : '—';
